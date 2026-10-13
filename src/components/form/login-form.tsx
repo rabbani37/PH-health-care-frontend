@@ -15,25 +15,35 @@ import { FaGoogle } from "react-icons/fa";
 import { useForm } from "@tanstack/react-form";
 import Link from "next/link";
 import { useState } from "react";
-import { Eye, EyeClosed } from "lucide-react";
+import { Eye, EyeClosed,} from "lucide-react";
 import { LoginZodSchema } from "@/validation";
+import { useLogin } from "@/hooks";
+import { Spinner } from "../ui/spinner";
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
   const [typePass, setTypePass] = useState(false);
 
+
+  const {mutate:login, isPending:loginPending} = useLogin()
+
   const form = useForm({
     defaultValues: {
-      email: "",
-      password: "",
+      email: "testerdoctor@gmail.com",
+      password: "Tester@doctor12345",
     },
     validators: {
       onSubmit: LoginZodSchema,
     },
 
     onSubmit: ({ value }) => {
-      console.log(value);
+      const loginData = {
+        email:value.email,
+        password:value.password
+      }
+
+      login(loginData)
     },
   });
 
@@ -125,7 +135,7 @@ export function LoginForm({
         </form.Field>
 
         <Field>
-          <Button type="submit">Login</Button>
+          <Button disabled={loginPending&& true} type="submit">{loginPending?<> <Spinner /> Submetting..</>:"Submit"}</Button>
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>

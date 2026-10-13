@@ -1,6 +1,7 @@
+import Logo from "@/assets/svg/logo";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 const Header = () => {
   const routes = [
@@ -13,7 +14,10 @@ const Header = () => {
 
   return (
     <div className="w-full  bg-accent shadow flex items-center justify-between px-10">
-      <h2 className="text-xl font-medium">PH Healthcare </h2>
+     <div className="flex items-center justify-center gap-1">
+      <Logo/>
+       <h2 className="text-xl font-medium">PH Healthcare </h2>
+     </div>
       <nav className="flex items-center justify-center  h-13 gap-10 ">
         {routes.map((route) => (
           <Link key={route.url} href={route.url}>
