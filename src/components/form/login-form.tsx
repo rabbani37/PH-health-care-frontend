@@ -11,22 +11,26 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "../ui/input";
-import { FaGoogle } from "react-icons/fa";
 import { useForm } from "@tanstack/react-form";
 import Link from "next/link";
 import { useState } from "react";
-import { Eye, EyeClosed,} from "lucide-react";
+import { Eye, EyeClosed } from "lucide-react";
 import { LoginZodSchema } from "@/validation";
-import { useLogin } from "@/hooks";
+import {  useLogin } from "@/hooks";
 import { Spinner } from "../ui/spinner";
+import { toast } from "../ui/toast";
+import { useRouter } from "next/navigation";
+import GoogleLoginComponent from "./GoogleLoginComponent";
+
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
   const [typePass, setTypePass] = useState(false);
+  const { mutate: login, isPending: loginPending } = useLogin();
 
 
-  const {mutate:login, isPending:loginPending} = useLogin()
+  const router = useRouter();
 
   const form = useForm({
     defaultValues: {
@@ -39,13 +43,35 @@ export function LoginForm({
 
     onSubmit: ({ value }) => {
       const loginData = {
-        email:value.email,
-        password:value.password
-      }
+        email: value.email,
+        password: value.password,
+      };
 
-      login(loginData)
+      login(loginData, {
+        onSuccess: () => {
+          toast.add({
+            type: "success",
+            title: "Welcome back!",
+            description: "You have logged in successfully.",
+          });
+          router.push("/");
+        },
+        onError: (err) => {
+          toast.add({
+            type: "error",
+            title: "Login Failed",
+            description:
+              err.message || "Invalid email or password. Please try again.",
+          });
+        },
+      });
     },
   });
+
+  
+
+
+  
 
   return (
     <form
@@ -135,14 +161,23 @@ export function LoginForm({
         </form.Field>
 
         <Field>
-          <Button disabled={loginPending&& true} type="submit">{loginPending?<> <Spinner /> Submetting..</>:"Submit"}</Button>
-        </Field>
-        <FieldSeparator>Or continue with</FieldSeparator>
-        <Field>
-          <Button variant="outline" type="button">
-            <FaGoogle />
-            Login with Google
+          <Button disabled={loginPending && true} type="submit">
+            {loginPending ? (
+              <>
+                {" "}
+                <Spinner /> Submetting..
+              </>
+            ) : (
+              "Submit"
+            )}
           </Button>
+        </Field>
+
+        <FieldSeparator>Or continue with</FieldSeparator>
+
+        <Field>
+         <GoogleLoginComponent />
+
           <FieldDescription className="text-center">
             Don&apos;t have an account?{" "}
             <Link href="/register" className="underline underline-offset-4">

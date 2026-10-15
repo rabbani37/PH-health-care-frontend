@@ -1,34 +1,37 @@
-import { userLogin } from "@/API";
+import { getMe, googleOAuth, registerPatient, userLogin, userLogout } from "@/API";
 import { toast } from "@/components/ui/toast";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 
 export function useLogin() {
 
-
-    const router = useRouter()
+   
     return useMutation({
         mutationFn: userLogin,
-        onSuccess: ({ res }) => {
-            toast.add({
-                type: "success",
-                title: "Welcome back!",
-                description: "You have logged in successfully.",
-            })
+    })
+}
 
 
-            router.push("/")
+export function useLogout() {
+    return useMutation({
+        mutationFn:userLogout
+    })
+}
 
-        },
-        onError: (err) => {
-            toast.add({
-                type: "error",
-                title: "Login Failed",
-                description: "Invalid email or password. Please try again.",
-
-            })
-
-        }
+export function useGetMe(){
+    return useQuery({
+        queryKey:["user"],
+        queryFn:getMe,
+        retry:false
+    })
+}
+export function useGoogleOAuth(){
+    return useMutation({
+        mutationFn:googleOAuth,
+    })
+}
+export function useRegisterPatient(){
+    return useMutation({
+        mutationFn:registerPatient,
     })
 }

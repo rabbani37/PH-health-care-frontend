@@ -1,3 +1,4 @@
+import path from "path";
 import z from "zod";
 
 export const LoginZodSchema = z.object({
@@ -13,8 +14,8 @@ export const LoginZodSchema = z.object({
 });
 
 
-
-export const PatientRegistrationZodSchema = z.object({
+const bdPhoneRegex = /^(?:\+88|88)?(01[3-9]\d{8})$/;
+export const patientRegistrationZodSchema = z.object({
 	fullName: z
 		.string()
 		.min(3, "Name must atleast 3 characters long!!!")
@@ -30,6 +31,13 @@ export const PatientRegistrationZodSchema = z.object({
 		.regex(/[^A-Za-z0-9]/, "Password must contain atleast 1 Special Character"),
 
 	contactNumber: z.string()
+	.length(11, "Phone number must be exactly 11 characters")
+		.optional()
 
+		.or(z.literal("")) // Allows the field to remain empty safely
+		.refine((val) => !val || bdPhoneRegex.test(val), {
+			message: "Invalid Bangladeshi phone number format",
+		}),
+	confirmPassword: z.string().min(1, "Please confirm your password")
 
-});
+}).refine((data) => data.password === data.confirmPassword, { message: "Password don't match", path: ["confirmPassword"] });
