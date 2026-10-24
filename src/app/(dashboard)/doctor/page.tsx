@@ -1,7 +1,7 @@
 import React from 'react'
 
-export default function DoctorPage() {
+export default function DoctorDashboard() {
   return (
-    <div>DoctorPage</div>
+    <div>Doctor Dashboard Page</div>
   )
 }

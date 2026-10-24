@@ -24,7 +24,7 @@ import { Spinner } from "../ui/spinner";
 import { useRouter } from "next/navigation";
 
 export function SignupForm({ className }: React.ComponentProps<"form">) {
-  const router= useRouter()
+  const router = useRouter();
   const [typePass, setTypePass] = useState(false);
   const [typePassConfirm, setTypePassConfirm] = useState(false);
 
@@ -34,8 +34,8 @@ export function SignupForm({ className }: React.ComponentProps<"form">) {
   const defaultValues: TPatientDefaultValues = {
     fullName: "",
     email: "",
-    password: "",
-    confirmPassword: "",
+    password: "Pa$$w0rd!",
+    confirmPassword: "Pa$$w0rd!",
     contactNumber: "01304567898",
   };
 
@@ -59,22 +59,24 @@ export function SignupForm({ className }: React.ComponentProps<"form">) {
         onSuccess: () => {
           toast.add({
             type: "success",
-            title: "Registration Successful!",
-            description: `Welcome aboard ${value.fullName}! Your registration completed Please Verifyt your account using OTP`,
+            title: "Registration successful ",
+            description: "Please check your email to verify your account.",
           });
 
-
-          const params = new URLSearchParams({email:registerData.email})
-          router.push(`/register/varify-account?${params}`)
+          const params = new URLSearchParams({ email: registerData.email });
+          router.push(`/register/verify-account?${params.toString()}`);
         },
 
-        onError:(error)=>{
+        onError: (error) => {
           toast.add({
-          type: "error",
-          title: "Registration Failed",
-          description: error instanceof Error ? error.message : "Something went wrong. Please try again.",
-        });
-        }
+            type: "error",
+            title: "Registration Failed",
+            description:
+              error instanceof Error
+                ? error.message
+                : "Something went wrong. Please try again.",
+          });
+        },
       });
     },
   });
@@ -245,14 +247,15 @@ export function SignupForm({ className }: React.ComponentProps<"form">) {
         </form.Field>
 
         <Field>
-          <Button disabled={isPending&& true} type="submit">{isPending ? (
+          <Button disabled={isPending && true} type="submit">
+            {isPending ? (
               <>
-                {" "}
                 <Spinner /> Submetting..
               </>
             ) : (
               "Create Account"
-            )}</Button>
+            )}
+          </Button>
         </Field>
 
         <FieldSeparator>Or continue with</FieldSeparator>

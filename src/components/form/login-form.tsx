@@ -16,7 +16,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
 import { LoginZodSchema } from "@/validation";
-import {  useLogin } from "@/hooks";
+import { useLogin } from "@/hooks";
 import { Spinner } from "../ui/spinner";
 import { toast } from "../ui/toast";
 import { useRouter } from "next/navigation";
@@ -28,7 +28,6 @@ export function LoginForm({
 }: React.ComponentProps<"form">) {
   const [typePass, setTypePass] = useState(false);
   const { mutate: login, isPending: loginPending } = useLogin();
-
 
   const router = useRouter();
 
@@ -68,11 +67,6 @@ export function LoginForm({
     },
   });
 
-  
-
-
-  
-
   return (
     <form
       onSubmit={(e) => {
@@ -90,6 +84,7 @@ export function LoginForm({
           </p>
         </div>
 
+        {/* email  */}
         <form.Field name="email">
           {(field) => {
             const isInvalid =
@@ -115,6 +110,7 @@ export function LoginForm({
           }}
         </form.Field>
 
+        {/* password  */}
         <form.Field name="password">
           {(field) => {
             const isInvalid =
@@ -176,7 +172,7 @@ export function LoginForm({
         <FieldSeparator>Or continue with</FieldSeparator>
 
         <Field>
-         <GoogleLoginComponent />
+          <GoogleLoginComponent />
 
           <FieldDescription className="text-center">
             Don&apos;t have an account?{" "}

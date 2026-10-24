@@ -1,8 +1,11 @@
 "use client";
 import Logo from "@/assets/svg/logo";
+import AuthLoading from "@/components/auth/authLoading";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { useGetMe, useLogout } from "@/hooks";
+import { adminRoutes } from "@/routes";
+import { UserRole } from "@/types/user.type";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,11 +19,28 @@ const Header = () => {
     // { name: "Register", url: "/register" },
   ];
 
-  const { data } = useGetMe();
+  const { data, isPending, error } = useGetMe();
   const { mutate: logout } = useLogout();
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
-  const router = useRouter()
-  const queryClient = useQueryClient()
+  const dashboardRoute: Partial<Record<UserRole, string>> = {
+    SUPER_ADMIN: "/admin",
+    ADMIN: "/admin",
+    PATIENT: "/patient",
+    DOCTOR: "/doctor",
+  };
+
+  if (isPending) {
+    return <AuthLoading lable="User comming soon..." />;
+  }
+  if (error || !data) {
+    return <div>Failed to load profile. Please log in again.</div>;
+  }
+
+  const role: UserRole = data.data?.role;
+
+  
 
   const handleLogout = () => {
     logout(undefined, {
@@ -30,16 +50,17 @@ const Header = () => {
           title: "Logged out",
           description: "You have been securely signed out. See you soon!",
         });
-        queryClient.removeQueries({queryKey:["user"]})
-router.push("/login")
+        queryClient.removeQueries({ queryKey: ["user"] });
+        router.push("/login");
       },
-      onError:(error)=>{
-         toast.add({
-        type: "error",
-        title: "Logout Failed",
-        description: error.message || "Something went wrong. Please try again.",
-      });
-      }
+      onError: (error) => {
+        toast.add({
+          type: "error",
+          title: "Logout Failed",
+          description:
+            error.message || "Something went wrong. Please try again.",
+        });
+      },
     });
   };
   return (
@@ -55,16 +76,22 @@ router.push("/login")
             {route.name}
           </Link>
         ))}
+
+        {role && <Link href={`${dashboardRoute[role]}`}>Dashboard</Link>}
       </nav>
 
-      { !data && (
+      {!data && (
         <Button
           variant={"default"}
           render={<Link href="/login"> Login</Link>}
           nativeButton={false}
         ></Button>
       )}
-      { data && <Button onClick={handleLogout} variant={"destructive"}>Logout</Button>}
+      {data && (
+        <Button onClick={handleLogout} variant={"destructive"}>
+          Logout
+        </Button>
+      )}
     </div>
   );
 };
