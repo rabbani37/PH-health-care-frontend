@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -8,21 +7,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import React from "react";
 import DoctorReviewSheet from "./DoctorReviewSheet";
-import { useGelAllDoctors } from "@/hooks";
+import { useSuspenseGelAllDoctors } from "@/hooks";
 
-export default function DoctorApprovalTable() {
-  const { data, isPending } = useGelAllDoctors();
+export default function DoctorApprovalTable({ ...paramsData }) {
+  const { data } = useSuspenseGelAllDoctors(paramsData);
 
   const doctors = data?.data || [];
-  console.log(data);
+  console.log(doctors);
+  console.log(paramsData);
+
   return (
     <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
+      <TableCaption>A list of your recent invoices {doctors.length}.</TableCaption>
+
       <TableHeader>
         <TableRow>
-          <TableHead className="">Name</TableHead>
+          <TableHead>Name</TableHead>
           <TableHead>License no.</TableHead>
           <TableHead>Email</TableHead>
           <TableHead>Specialization</TableHead>
@@ -33,22 +34,16 @@ export default function DoctorApprovalTable() {
       </TableHeader>
       <TableBody>
         {doctors.map((doctor) => (
-          <TableRow key={doctor.email} className="text-gray-600">
-            <TableCell >
-              {doctor?.name || "no name"}
-            </TableCell>
-            <TableCell >
-              {doctor?.licenseNumber || "not email"}
-            </TableCell>
-            <TableCell >
-              {doctor?.email || "no email"}
-            </TableCell>
+          <TableRow key={doctor.email} className="text-gray-700">
+            <TableCell>{doctor?.name || "no name"}</TableCell>
+            <TableCell>{doctor?.licenseNumber || "not email"}</TableCell>
+            <TableCell>{doctor?.email || "no email"}</TableCell>
 
-            <TableCell>{doctor?.specialization||"No-"}</TableCell>
-            <TableCell>{doctor?.contactNumber||"01XXXXXXXX"}</TableCell>
+            <TableCell>{doctor?.specialization || "No-"}</TableCell>
+            <TableCell>{doctor?.contactNumber || "01XXXXXXXX"}</TableCell>
 
             <TableCell className="text-right">
-              <DoctorReviewSheet />
+              <DoctorReviewSheet  doctorId= {doctor.id} paramsData={paramsData } />
             </TableCell>
           </TableRow>
         ))}

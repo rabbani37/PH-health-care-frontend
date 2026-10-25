@@ -1,6 +1,7 @@
 import { getAllDoctors, getMe, googleOAuth, registerPatient, userLogin, userLogout, verifyAccount } from "@/API";
 import { toast } from "@/components/ui/toast";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { DoctorParams } from "@/types/doctor.type";
+import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 
 export function useLogin() {
@@ -41,9 +42,15 @@ export function useVerifyAccount(){
         mutationFn:verifyAccount,
     })
 }
-export function useGelAllDoctors(){
+export function useGelAllDoctors(params:DoctorParams){
     return useQuery({
-        queryKey:["doctors"],
-        queryFn:getAllDoctors,
+        queryKey:["doctors",params],
+        queryFn:()=> getAllDoctors(params),
+    })
+}
+export function useSuspenseGelAllDoctors(params:DoctorParams){
+    return useSuspenseQuery({
+        queryKey:["doctors",params],
+        queryFn:()=> getAllDoctors(params),
     })
 }

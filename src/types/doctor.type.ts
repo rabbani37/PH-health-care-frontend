@@ -50,7 +50,7 @@ export interface IDoctor {
     reviewedAt?: null | string
     resume?: null | string
     resumePublicId?: null | string
-    additionalFiles?: IAdditionalFile[]| null
+    additionalFiles?: IAdditionalFile[] | null
     isDeleted: boolean
     deletedAt?: null | string
     createdAt: string
@@ -65,3 +65,10 @@ export interface IAdditionalFile {
 }
 
 
+export interface DoctorParams {
+    verificationStatus?: string,
+    page?: number
+    limit?: number
+    searchTerm?: string
+    sortOrder?: "desc" | "asc"
+}

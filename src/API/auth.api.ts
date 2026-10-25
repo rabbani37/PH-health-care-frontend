@@ -1,7 +1,7 @@
 import apiClient from "@/lib/apiClient";
 import { APIResponse } from "@/types/api.type";
 import { IRegisterPatientPayload } from "@/types/auth.type";
-import { IDoctor } from "@/types/doctor.type";
+import { DoctorParams, IDoctor } from "@/types/doctor.type";
 
 export function userLogin(payload: { email: string, password: string }) {
     return apiClient("/auth/login", { method: "POST", body: payload })
@@ -21,6 +21,6 @@ export function registerPatient(payload: IRegisterPatientPayload) {
 export function verifyAccount(payload: { email: string; otp: string }) {
     return apiClient("/auth/verify-email", { method: "POST", body: payload })
 }
-export function getAllDoctors() {
-    return apiClient<APIResponse<IDoctor[]>>("/doctor/all-doctors")
+export function getAllDoctors(params:DoctorParams) {
+    return apiClient<APIResponse<IDoctor[]>>("/doctor/all-doctors",{params})
 }
